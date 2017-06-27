@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/bg"
+    tools:context="com.exzy.smartgadgetforyou.MainActivity">
+
+    <LinearLayout
+        android:layout_width="1264dp"
+        android:layout_height="711dp"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp">
+
+        <TextView
+            android:id="@+id/mainLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+
+            android:layout_marginBottom="-15dp"
+            android:gravity="bottom|center"
+            android:text="SMART GADGET FOR YOU"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="63sp"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="155dp"
+            tools:layout_editor_absoluteY="45dp" />
+
+        <TextView
+            android:id="@+id/thaiLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.13"
+            android:gravity="top|center"
+            android:paddingBottom="5dp"
+            android:paddingTop="15dp"
+            android:text="thai"
+            android:textAlignment="center"
+            android:textColor="#5a5a5a"
+            android:textSize="42sp"
+            tools:layout_editor_absoluteX="198dp"
+            tools:layout_editor_absoluteY="88dp" />
+
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/product_frame_layout"
+            android:layout_width="1280dp"
+            android:layout_height="wrap_content">
+
+
+            <HorizontalScrollView
+                android:id="@+id/productSlide"
+                android:layout_width="match_parent"
+                android:layout_height="358dp"
+                android:layout_marginBottom="-20dp"
+                android:overScrollMode="never"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/product_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="1dp" />
+
+            </HorizontalScrollView>
+
+            <ImageView
+                android:id="@+id/fadeProductRight"
+                android:layout_width="50dp"
+                android:layout_height="285dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="-5dp"
+                android:layout_marginTop="5dp"
+                android:scaleType="fitXY"
+                app:srcCompat="@mipmap/fade" />
+
+            <ImageView
+                android:id="@+id/fadeProductLeft"
+                android:layout_width="50dp"
+                android:layout_height="288dp"
+                android:layout_marginLeft="-5dp"
+                android:layout_marginTop="3dp"
+                android:alpha="0"
+                android:scaleType="fitXY"
+                android:scaleX="-1"
+                app:srcCompat="@mipmap/fade" />
+
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="750dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="-50dp"
+            android:layout_marginTop="-90dp"
+            android:layout_weight="0.67"
+            app:srcCompat="@mipmap/line" />
+
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/type_frame_layout"
+            android:layout_width="1280dp"
+            android:layout_height="wrap_content">
+
+            <HorizontalScrollView
+                android:id="@+id/typeSlide"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:layout_weight="0.76"
+                android:overScrollMode="never"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@mipmap/category"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingBottom="17dp"
+                    android:paddingTop="17dp">
+
+                    <LinearLayout
+                        android:layout_width="310dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="-3dp"
+                        android:layout_marginRight="-11dp"
+                        android:layout_marginTop="7dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/product_type_1"
+                                android:layout_width="305dp"
+                                android:layout_height="145dp"
+                                android:src="@mipmap/wearable_type" />
+
+                            <ImageView
+                                android:id="@+id/product_type_border_1"
+                                android:layout_width="328dp"
+                                android:layout_height="162dp"
+                                android:layout_marginLeft="-12dp"
+                                android:layout_marginTop="-5dp"
+                                android:paddingBottom="4dp"
+                                android:visibility="invisible"
+                                app:srcCompat="@mipmap/frame" />
+
+                            <TextView
+                                android:id="@+id/product_type_font_1"
+                                android:layout_width="283dp"
+                                android:layout_height="146dp"
+                                android:layout_weight="1"
+                                android:gravity="bottom|right"
+                                android:text="WEARABLE"
+                                android:textColor="@android:color/white"
+                                android:textSize="42sp" />
+
+                        </FrameLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="310dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="-3dp"
+                        android:layout_marginLeft="-7dp"
+                        android:layout_marginRight="-11dp"
+                        android:layout_marginTop="7dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/product_type_2"
+                                android:layout_width="305dp"
+                                android:layout_height="145dp"
+                                android:src="@mipmap/speaker_type" />
+
+                            <ImageView
+                                android:id="@+id/product_type_border_2"
+                                android:layout_width="328dp"
+                                android:layout_height="162dp"
+                                android:layout_marginLeft="-12dp"
+                                android:layout_marginTop="-5dp"
+                                android:paddingBottom="4dp"
+                                android:visibility="invisible"
+                                app:srcCompat="@mipmap/frame" />
+
+                            <TextView
+                                android:id="@+id/product_type_font_2"
+                                android:layout_width="283dp"
+                                android:layout_height="146dp"
+                                android:layout_weight="1"
+                                android:gravity="bottom|right"
+                                android:text="SPEAKER"
+                                android:textColor="@android:color/white"
+                                android:textSize="42sp" />
+
+                        </FrameLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="310dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="-3dp"
+                        android:layout_marginLeft="-7dp"
+                        android:layout_marginRight="-11dp"
+                        android:layout_marginTop="7dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/product_type_3"
+                                android:layout_width="305dp"
+                                android:layout_height="145dp"
+                                android:src="@mipmap/headset_type" />
+
+                            <ImageView
+                                android:id="@+id/product_type_border_3"
+                                android:layout_width="328dp"
+                                android:layout_height="162dp"
+                                android:layout_marginLeft="-12dp"
+                                android:layout_marginTop="-5dp"
+                                android:paddingBottom="4dp"
+                                android:visibility="invisible"
+                                app:srcCompat="@mipmap/frame" />
+
+                            <TextView
+                                android:id="@+id/product_type_font_3"
+                                android:layout_width="283dp"
+                                android:layout_height="146dp"
+                                android:layout_weight="1"
+                                android:gravity="bottom|right"
+                                android:text="HEADSET"
+                                android:textColor="@android:color/white"
+                                android:textSize="42sp" />
+
+                        </FrameLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="310dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="-3dp"
+                        android:layout_marginLeft="-7dp"
+                        android:layout_marginRight="-11dp"
+                        android:layout_marginTop="7dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/product_type_4"
+                                android:layout_width="305dp"
+                                android:layout_height="145dp"
+                                android:src="@mipmap/camera_type" />
+
+                            <ImageView
+                                android:id="@+id/product_type_border_4"
+                                android:layout_width="328dp"
+                                android:layout_height="162dp"
+                                android:layout_marginLeft="-12dp"
+                                android:layout_marginTop="-5dp"
+                                android:paddingBottom="4dp"
+                                android:visibility="invisible"
+                                app:srcCompat="@mipmap/frame" />
+
+                            <TextView
+                                android:id="@+id/product_type_font_4"
+                                android:layout_width="283dp"
+                                android:layout_height="146dp"
+                                android:layout_weight="1"
+                                android:gravity="bottom|right"
+                                android:text="CAMERA"
+                                android:textColor="@android:color/white"
+                                android:textSize="42sp" />
+
+                        </FrameLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="310dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="-3dp"
+                        android:layout_marginLeft="-7dp"
+                        android:layout_marginRight="-5dp"
+                        android:layout_marginTop="7dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/product_type_5"
+                                android:layout_width="305dp"
+                                android:layout_height="145dp"
+                                android:src="@mipmap/drone_type" />
+
+                            <ImageView
+                                android:id="@+id/product_type_border_5"
+                                android:layout_width="328dp"
+                                android:layout_height="162dp"
+                                android:layout_marginLeft="-12dp"
+                                android:layout_marginTop="-5dp"
+                                android:paddingBottom="4dp"
+                                android:visibility="invisible"
+                                app:srcCompat="@mipmap/frame" />
+
+                            <TextView
+                                android:id="@+id/product_type_font_5"
+                                android:layout_width="283dp"
+                                android:layout_height="146dp"
+                                android:layout_weight="1"
+                                android:gravity="bottom|right"
+                                android:text="DRONE"
+                                android:textColor="@android:color/white"
+                                android:textSize="42sp" />
+
+                        </FrameLayout>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <ImageView
+                android:id="@+id/fadeTypeRight"
+                android:layout_width="100dp"
+                android:layout_height="145dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="-4dp"
+                android:layout_marginTop="22dp"
+                android:scaleType="fitXY"
+                app:srcCompat="@mipmap/fade" />
+
+            <ImageView
+                android:id="@+id/fadeTypeLeft"
+                android:layout_width="100dp"
+                android:layout_height="145dp"
+                android:layout_marginLeft="-4dp"
+                android:layout_marginTop="22dp"
+                android:alpha="0"
+                android:scaleType="fitXY"
+                android:scaleX="-1"
+                android:visibility="visible"
+                app:srcCompat="@mipmap/fade" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
