@@ -9,14 +9,15 @@ public class Product {
     private String product_price;
     private int product_img;
     private int content;
+    private String category;
     private boolean clicked;
 
-    public Product(String name, String price, int product_img, int content) {
+    public Product(String name, String price, int product_img, int content, String category) {
         this.product_name = name;
         this.product_price = price;
         this.product_img = product_img;
-
         this.content = content;
+        this.category = category;
     }
 
     public int getProduct_img() {
@@ -58,4 +59,8 @@ public class Product {
     public void setClick(boolean click) {
         clicked = click;
     }
+
+    public String getCategory() { return this.category; }
+
+    public void setCategory(String category) { this.category = category; }
 }

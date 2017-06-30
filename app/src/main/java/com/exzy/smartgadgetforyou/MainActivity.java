@@ -38,9 +38,17 @@ public class MainActivity extends AppCompatActivity {
     private List<View> product_layout_drone;
     private List<Product> tempProductList;
     private HorizontalScrollView productSlide;
+    private HorizontalScrollView categorySlide;
 
+    // identifier of new content image
     private int product_content_new;
+    // identifier of hot content image
     private int product_content_hot;
+
+    // dimension of each device
+    float dimension;
+    // max length of scrolling in productSlide
+    float maxProductScroll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +66,9 @@ public class MainActivity extends AppCompatActivity {
      * Initial all components in this activity.
      */
     public void initComponents() {
+        dimension = getResources().getDimension(R.dimen.one_dp);
         productSlide = (HorizontalScrollView) findViewById(R.id.productSlide);
+        categorySlide = (HorizontalScrollView) findViewById(R.id.typeSlide);
         tempProductList = initProduct();
         product_layout = (ViewGroup) findViewById(R.id.product_layout);
         temp_product_layout = new ArrayList<View>();
@@ -68,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         product_layout_camera = new ArrayList<View>();
         product_layout_drone = new ArrayList<View>();
 
+        // initial component of view
         for (int i = 0; i < initProduct().size(); i++) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -77,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             lr.setOrientation(LinearLayout.VERTICAL);
             product_layout.addView(lr);
             LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View newRow = layoutInflater.inflate(R.layout.gadget_recycler_view, null, false);
+            final View newRow = layoutInflater.inflate(R.layout.gadget_recycler_view, null, false);
             final ImageView product_img = (ImageView) newRow.findViewById(R.id.product_img);
             final ImageView product_content_img = (ImageView) newRow.findViewById(R.id.product_content_img);
             final TextView product_price = (TextView) newRow.findViewById(R.id.product_price);
@@ -87,15 +98,18 @@ public class MainActivity extends AppCompatActivity {
             final ImageView shadow = (ImageView) newRow.findViewById(R.id.product_shadow);
             final TextView product_content = (TextView) newRow.findViewById(R.id.product_content_text);
             final int tempIndex = i;
+
             newRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.e("index", tempIndex + "");
                     if (tempIndex != 0 && tempIndex != product_layout.getChildCount() - 1) {
                         for (int i = 0; i < product_layout.getChildCount() ; i++) {
-                            if (i != tempIndex)
+                            if (i != tempIndex) {
                                 product_layout.getChildAt(i).performClick();
+                            }
                         }
+                        Log.e("isClicked", tempProductList.get(tempIndex).isClicked()+"");
                         if (!tempProductList.get(tempIndex).isClicked()) {
                             imgClicked();
                         } else {
@@ -104,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
+                // reduce alpha image after click view
                 public void imgClicked() {
                     product_viewing.setVisibility(View.VISIBLE);
                     bg.setAlpha((float) 0.5);
@@ -124,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
                     viewingClicked();
                 }
 
+                // increase alpha image after click view
                 public void viewingClicked() {
                     product_viewing.setVisibility(View.INVISIBLE);
                     bg.setAlpha((float) 1.0);
@@ -146,21 +162,21 @@ public class MainActivity extends AppCompatActivity {
                 product_content.setVisibility(View.INVISIBLE);
                 shadow.setVisibility(View.INVISIBLE);
                 if (i == 0) {
-                    params.setMargins(-262, 0, -16, 0);
+                    params.setMargins((int) (-170 * dimension), 0, (int) (-16 * dimension), 0);
                 } else {
-                    params.setMargins(-16, 0, -260, 0);
+                    params.setMargins((int) (-16 * dimension), 0, (int) (-165 * dimension), 0);
                 }
                 lr.setLayoutParams(params);
             } else {
-                params.setMargins(-15, 0, -15, 0);
+                params.setMargins((int) (-10 * dimension), 0, (int) (-10 * dimension), 0);
                 lr.setLayoutParams(params);
                 product_name.setText(initProduct().get(i).getProduct_name());
                 product_price.setText(initProduct().get(i).getProduct_price());
                 product_img.setImageResource(initProduct().get(i).getProduct_img());
                 if (initProduct().get(i).getContent() != 0) {
-                    if(initProduct().get(i).getContent() == product_content_new){
+                    if (initProduct().get(i).getContent() == product_content_new) {
                         product_content.setText("NEW");
-                    } else if(initProduct().get(i).getContent() == product_content_hot) {
+                    } else if (initProduct().get(i).getContent() == product_content_hot) {
                         product_content.setText("HOT");
                     }
                     product_content_img.setImageResource(initProduct().get(i).getContent());
@@ -213,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
         final ImageView droneType = (ImageView) findViewById(R.id.product_type_5);
         final ImageView droneBorder = (ImageView) findViewById(R.id.product_type_border_5);
 
-//        set size typeface of product type
+        // set size typeface and action listener of each product type
         wearableText.setTypeface(akrobatBoldExtra);
         wearableType.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                 fadeProductRight.setVisibility(View.VISIBLE);
                 if (wearableBorder.getVisibility() == View.VISIBLE) {
                     wearableClicked = false;
-                    setProductFade(fadeProductLeft,fadeProductRight);
+                    setProductFade(fadeProductLeft, fadeProductRight);
                     wearableText.setTextColor(Color.WHITE);
                     wearableBorder.setVisibility(View.INVISIBLE);
                     product_layout.removeAllViews();
@@ -231,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } else {
                     wearableClicked = true;
-                    setProductFade(fadeProductLeft,fadeProductRight);
+                    setProductFade(fadeProductLeft, fadeProductRight);
                     wearableText.setTextColor(Color.parseColor("#8bc53e"));
                     wearableBorder.setVisibility(View.VISIBLE);
                     product_layout.removeAllViews();
@@ -340,7 +356,10 @@ public class MainActivity extends AppCompatActivity {
                     cameraText.setTextColor(Color.parseColor("#8bc53e"));
                     cameraBorder.setVisibility(View.VISIBLE);
                     product_layout.removeAllViews();
-                    // no view in camera
+                    for (int i = 0; i < product_layout_camera.size(); i++) {
+                        product_layout_camera.get(i).performClick();
+                        product_layout.addView(product_layout_camera.get(i));
+                    }
                     fadeProductRight.setVisibility(View.INVISIBLE);
                 }
                 speakerText.setTextColor(Color.WHITE);
@@ -391,10 +410,25 @@ public class MainActivity extends AppCompatActivity {
 
         setCategoryFade();
 
-//        productSlide.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+        /** use to test get getScrollX of productSlide */
+//        productSlide.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
-//            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-//                Log.i("Scrolling", "X from [" + oldScrollX + "] to [" + scrollX + "]");
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                Log.i("Scrolling", productSlide.getScrollX()+"");
+//                Log.e("pixel",getResources().getDimension(R.dimen.one_dp)+"");
+//                Log.e("pixel",productSlide.getMaxScrollAmount()+"");
+//                return false;
+//            }
+//        });
+
+        /** use to test get getScrollX of categorySlide */
+//        categorySlide.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                Log.i("Scrolling", categorySlide.getScrollX()+"");
+//                Log.e("pixel",getResources().getDimension(R.dimen.one_dp)+"");
+//                Log.e("pixel",categorySlide.getMaxScrollAmount()+"");
+//                return false;
 //            }
 //        });
 
@@ -425,51 +459,51 @@ public class MainActivity extends AppCompatActivity {
         product_content_new = getResources().getIdentifier("new_tag", "mipmap", getPackageName());
         product_content_hot = getResources().getIdentifier("hot_tag", "mipmap", getPackageName());
 
-        Product emptyItem = new Product("", "", 0, 0);
+        Product emptyItem = new Product("", "", 0, 0, "");
 
-        Product forerunner235 = new Product("forerunner 235", "12,990", product_img_id, product_content_new);
+        Product forerunner235 = new Product("forerunner 235", "12,990", product_img_id, product_content_new, "wearable");
 
         product_img_id = getResources().getIdentifier("wear_forerunner35", "mipmap", getPackageName());
-        Product forerunner35 = new Product("forerunner 35", "12,990", product_img_id, product_content_hot);
+        Product forerunner35 = new Product("forerunner 35", "12,990", product_img_id, product_content_hot, "wearable");
 
         product_img_id = getResources().getIdentifier("forerunner_735xt", "mipmap", getPackageName());
-        Product forerunner735xt = new Product("forerunner 735XT", "12,990", product_img_id, 0);
+        Product forerunner735xt = new Product("forerunner 735XT", "12,990", product_img_id, 0, "wearable");
 
         product_img_id = getResources().getIdentifier("garmin_vivosmart_hrplus", "mipmap", getPackageName());
-        Product vivosmart_hrplus = new Product("vivosmart HR+", "12,990", product_img_id, 0);
+        Product vivosmart_hrplus = new Product("vivosmart HR+", "12,990", product_img_id, 0, "wearable");
 
         product_img_id = getResources().getIdentifier("vivoactive_hr", "mipmap", getPackageName());
-        Product vivoactive_hr = new Product("vivoactive HR", "12,990", product_img_id, 0);
+        Product vivoactive_hr = new Product("vivoactive HR", "12,990", product_img_id, 0, "wearable");
 
         product_img_id = getResources().getIdentifier("fenix5s", "mipmap", getPackageName());
-        Product fenix5s = new Product("fenix 5S", "12,990", product_img_id, 0);
+        Product fenix5s = new Product("fenix 5S", "12,990", product_img_id, 0, "wearable");
 
         product_img_id = getResources().getIdentifier("garmin_fenix5", "mipmap", getPackageName());
-        Product fenix5 = new Product("fenix 5", "12,990", product_img_id, 0);
+        Product fenix5 = new Product("fenix 5", "12,990", product_img_id, 0, "wearable");
 
         product_img_id = getResources().getIdentifier("garmin_fenix5x", "mipmap", getPackageName());
-        Product fenix5x = new Product("fenix 5X", "12,990", product_img_id, 0);
+        Product fenix5x = new Product("fenix 5X", "12,990", product_img_id, 0, "wearable");
 
         product_img_id = getResources().getIdentifier("pomo_waffle_black", "mipmap", getPackageName());
-        Product pomowaffle = new Product("POMO Waffle", "5,990", product_img_id, 0);
+        Product pomowaffle = new Product("POMO Waffle", "5,990", product_img_id, 0, "wearable");
 
         product_img_id = getResources().getIdentifier("beoplay_a1", "mipmap", getPackageName());
-        Product beoplayA1 = new Product("Beoplay A1", "10,500", product_img_id, 0);
+        Product beoplayA1 = new Product("Beoplay A1", "10,500", product_img_id, 0, "speaker");
 
         product_img_id = getResources().getIdentifier("beoplay_a2", "mipmap", getPackageName());
-        Product beoplayA2 = new Product("Beoplay A2", "16,500", product_img_id, 0);
+        Product beoplayA2 = new Product("Beoplay A2", "16,500", product_img_id, 0, "speaker");
 
         product_img_id = getResources().getIdentifier("onyx_mini", "mipmap", getPackageName());
-        Product onyx_mini = new Product("ONYX MINI", "5,990", product_img_id, 0);
+        Product onyx_mini = new Product("ONYX MINI", "5,990", product_img_id, 0, "speaker");
 
         product_img_id = getResources().getIdentifier("esquire2", "mipmap", getPackageName());
-        Product esquire2 = new Product("ESQUIRE 2", "8,990", product_img_id, 0);
+        Product esquire2 = new Product("ESQUIRE 2", "8,990", product_img_id, 0, "speaker");
 
         product_img_id = getResources().getIdentifier("beoplay_h9", "mipmap", getPackageName());
-        Product beoplayH9 = new Product("Beoplay H9", "20,500", product_img_id, 0);
+        Product beoplayH9 = new Product("Beoplay H9", "20,500", product_img_id, 0, "headset");
 
         product_img_id = getResources().getIdentifier("dobby_pocket_drone", "mipmap", getPackageName());
-        Product dobbyPocketDrone = new Product("DOBBY POCKET DRONE", "15,500", product_img_id, 0);
+        Product dobbyPocketDrone = new Product("DOBBY POCKET DRONE", "15,500", product_img_id, 0, "drone");
 
         List<Product> dataset = new ArrayList<Product>();
         dataset.add(emptyItem);
@@ -497,19 +531,25 @@ public class MainActivity extends AppCompatActivity {
         return dataset;
     }
 
+    /**
+     * Add view from product_layout to list of each category.
+     */
     public void addProductToEachCategory() {
-        for(int i = 0 ; i < product_layout.getChildCount() ; i++) {
+        for (int i = 0; i < product_layout.getChildCount(); i++) {
             temp_product_layout.add(product_layout.getChildAt(i));
-            if((i >= 0 && i < 10) || i == product_layout.getChildCount()-1) {
+            if (i == 0 || tempProductList.get(i).getCategory().equalsIgnoreCase("wearable") || i == product_layout.getChildCount() - 1) {
                 product_layout_wearable.add(product_layout.getChildAt(i));
             }
-            if(i == 0 || (i >= 10 && i < 14) || i == product_layout.getChildCount()-1) {
+            if (i == 0 || tempProductList.get(i).getCategory().equalsIgnoreCase("speaker") || i == product_layout.getChildCount() - 1) {
                 product_layout_speaker.add(product_layout.getChildAt(i));
             }
-            if(i == 0 || (i >= 14 && i < 15) || i == product_layout.getChildCount()-1) {
+            if (i == 0 || tempProductList.get(i).getCategory().equalsIgnoreCase("headset") || i == product_layout.getChildCount() - 1) {
                 product_layout_headset.add(product_layout.getChildAt(i));
             }
-            if(i == 0 || (i >= 15 && i < 16) || i == product_layout.getChildCount()-1) {
+            if (i == 0 || tempProductList.get(i).getCategory().equalsIgnoreCase("camera") || i == product_layout.getChildCount() - 1) {
+                product_layout_camera.add(product_layout.getChildAt(i));
+            }
+            if (i == 0 || tempProductList.get(i).getCategory().equalsIgnoreCase("drone") || i == product_layout.getChildCount() - 1) {
                 product_layout_drone.add(product_layout.getChildAt(i));
             }
         }
@@ -534,7 +574,9 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             fadeTypeLeft.setAlpha(1f);
                         }
-                        if (typeSlide.getScrollX() <= 294 && typeSlide.getScrollX() >= 274) {
+                        if (dimension == 1 && typeSlide.getScrollX() <= 203 * dimension && typeSlide.getScrollX() >= 203 * dimension - 20) {
+                            fadeTypeRight.setAlpha((203 * dimension - typeSlide.getScrollX()) / 20f);
+                        } else if (dimension == 1.5 && typeSlide.getScrollX() <= 294 && typeSlide.getScrollX() >= 294 - 20) {
                             fadeTypeRight.setAlpha((294 - typeSlide.getScrollX()) / 20f);
                         } else {
                             fadeTypeRight.setAlpha(1f);
@@ -562,24 +604,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *
-     * @param fadeProductLeft is fade image of left side in HorizontalScrollView
+     * @param fadeProductLeft  is fade image of left side in HorizontalScrollView
      * @param fadeProductRight is fade image of right side in HorizontalScrollView
      */
     public void setProductFade(final ImageView fadeProductLeft, final ImageView fadeProductRight) {
+        maxProductScroll = 1810 * dimension;
+        if (dimension == 1.5) {
+            maxProductScroll = 1816 * dimension;
+        }
+
         //fade product type
         final ViewTreeObserver.OnScrollChangedListener onScrollChangedListenerNotFilter = new
                 ViewTreeObserver.OnScrollChangedListener() {
 
                     @Override
                     public void onScrollChanged() {
-                        if (productSlide.getScrollX() <= 40) {
-                            fadeProductLeft.setAlpha(productSlide.getScrollX() / 40f);
+                        if (productSlide.getScrollX() <= 60 * dimension) {
+                            fadeProductLeft.setAlpha(productSlide.getScrollX() / 60f * dimension);
                         } else {
                             fadeProductLeft.setAlpha(1f);
                         }
-                        if (productSlide.getScrollX() <= 2720 && productSlide.getScrollX() >= 2680) {
-                            fadeProductRight.setAlpha((2720 - productSlide.getScrollX()) / 40f);
+                        if (productSlide.getScrollX() <= maxProductScroll && productSlide.getScrollX() >= maxProductScroll - 60 * dimension) {
+                            fadeProductRight.setAlpha((maxProductScroll - productSlide.getScrollX()) / 60f * dimension);
                         } else {
                             fadeProductRight.setAlpha(1f);
                         }
@@ -592,13 +638,13 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onScrollChanged() {
-                        if (productSlide.getScrollX() <= 40) {
-                            fadeProductLeft.setAlpha(productSlide.getScrollX() / 40f);
+                        if (productSlide.getScrollX() * dimension <= 50) {
+                            fadeProductLeft.setAlpha(productSlide.getScrollX() * dimension / 50f);
                         } else {
                             fadeProductLeft.setAlpha(1f);
                         }
-                        if (productSlide.getScrollX() <= 908 && productSlide.getScrollX() >= 868) {
-                            fadeProductRight.setAlpha((908 - productSlide.getScrollX()) / 40f);
+                        if (productSlide.getScrollX() <= 610 * dimension && productSlide.getScrollX() * dimension >= (610 * dimension) - 50 * dimension) {
+                            fadeProductRight.setAlpha((610 * dimension - productSlide.getScrollX()) * dimension / 50f * dimension);
                         } else {
                             fadeProductRight.setAlpha(1f);
                         }
@@ -614,7 +660,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 if (observer == null) {
                     observer = productSlide.getViewTreeObserver();
-                    if(wearableClicked)
+                    if (wearableClicked)
                         observer.addOnScrollChangedListener(onScrollChangedListenerWearableFilter);
                     else
                         observer.addOnScrollChangedListener(onScrollChangedListenerNotFilter);
@@ -622,7 +668,7 @@ public class MainActivity extends AppCompatActivity {
                     observer.removeOnScrollChangedListener(onScrollChangedListenerWearableFilter);
                     observer.removeOnScrollChangedListener(onScrollChangedListenerNotFilter);
                     observer = productSlide.getViewTreeObserver();
-                    if(wearableClicked)
+                    if (wearableClicked)
                         observer.addOnScrollChangedListener(onScrollChangedListenerWearableFilter);
                     else
                         observer.addOnScrollChangedListener(onScrollChangedListenerNotFilter);
@@ -643,13 +689,13 @@ public class MainActivity extends AppCompatActivity {
                         timer.schedule(new TimerTask() {
                             @Override
                             public void run() {
-                                if (productSlide.getScrollX() < 170) {
-                                    productSlide.smoothScrollTo(0,0);
+                                if (productSlide.getScrollX() < 138 * dimension) {
+                                    productSlide.smoothScrollTo(0, 0);
                                 } else {
-                                    productSlide.smoothScrollTo(((int) (productSlide.getScrollX() / 270) * 300) + (int) ((int) (productSlide.getScrollX() / 270) * 1.5),0);
+                                    productSlide.smoothScrollTo((int) ((productSlide.getScrollX() / (int) (170 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 170 * dimension) * 1.1), 0);
                                 }
                             }
-                        }, 100);
+                        }, 1000);
                     }
                 }
 
