@@ -1,7 +1,9 @@
 package com.exzy.smartgadgetforyou;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +16,9 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private List<Product> tempProductList;
     private HorizontalScrollView productSlide;
     private HorizontalScrollView categorySlide;
+    private ImageView fadeTypeLeft;
+    private ImageView fadeTypeRight;
 
     // identifier of new content image
     private int product_content_new;
@@ -69,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
         dimension = getResources().getDimension(R.dimen.one_dp);
         productSlide = (HorizontalScrollView) findViewById(R.id.productSlide);
         categorySlide = (HorizontalScrollView) findViewById(R.id.typeSlide);
+        ImageView fadeTypeLeft = (ImageView) findViewById(R.id.fadeTypeLeft);
+        ImageView fadeTypeRight = (ImageView) findViewById(R.id.fadeTypeRight);
         tempProductList = initProduct();
         product_layout = (ViewGroup) findViewById(R.id.product_layout);
         temp_product_layout = new ArrayList<View>();
@@ -98,22 +107,28 @@ public class MainActivity extends AppCompatActivity {
             final ImageView shadow = (ImageView) newRow.findViewById(R.id.product_shadow);
             final TextView product_content = (TextView) newRow.findViewById(R.id.product_content_text);
             final int tempIndex = i;
+            final boolean isViewVisible = newRow.isShown();
 
             newRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.e("index", tempIndex + "");
-                    if (tempIndex != 0 && tempIndex != product_layout.getChildCount() - 1) {
-                        for (int i = 0; i < product_layout.getChildCount() ; i++) {
-                            if (i != tempIndex) {
-                                product_layout.getChildAt(i).performClick();
+                    Rect rect = new Rect();
+                    if(newRow.getGlobalVisibleRect(rect)
+                            && newRow.getHeight() == rect.height()
+                            && newRow.getWidth() == rect.width() ) {
+                        Log.e("index", tempIndex + "");
+                        if (tempIndex != 0 && tempIndex != product_layout.getChildCount() - 1) {
+                            for (int i = 0; i < product_layout.getChildCount() ; i++) {
+                                if (i != tempIndex) {
+                                    product_layout.getChildAt(i).performClick();
+                                }
                             }
-                        }
-                        Log.e("isClicked", tempProductList.get(tempIndex).isClicked()+"");
-                        if (!tempProductList.get(tempIndex).isClicked()) {
-                            imgClicked();
-                        } else {
-                            product_layout.getChildAt(tempIndex).performClick();
+                            Log.e("isClicked", tempProductList.get(tempIndex).isClicked()+"");
+                            if (!tempProductList.get(tempIndex).isClicked()) {
+                                imgClicked();
+                            } else {
+                                product_layout.getChildAt(tempIndex).performClick();
+                            }
                         }
                     }
                 }
@@ -246,6 +261,11 @@ public class MainActivity extends AppCompatActivity {
                         product_layout.addView(temp_product_layout.get(i));
                     }
                 } else {
+                    final ObjectAnimator transAnimation = ObjectAnimator.ofInt(categorySlide, "scrollX",  0);
+                    transAnimation.setDuration(400);
+                    transAnimation.setInterpolator(new DecelerateInterpolator());
+                    transAnimation.start();
+//                    ObjectAnimator.ofInt(categorySlide, "scrollX",  0).setDuration(100).start();
                     wearableClicked = true;
                     setProductFade(fadeProductLeft, fadeProductRight);
                     wearableText.setTextColor(Color.parseColor("#8bc53e"));
@@ -387,6 +407,17 @@ public class MainActivity extends AppCompatActivity {
                     }
                     fadeProductRight.setVisibility(View.VISIBLE);
                 } else {
+                    if (dimension == 1) {
+                        final ObjectAnimator transAnimation = ObjectAnimator.ofInt(categorySlide, "scrollX",  203);
+                        transAnimation.setDuration(400);
+                        transAnimation.setInterpolator(new DecelerateInterpolator());
+                        transAnimation.start();
+                    } else if (dimension == 1.5) {
+                        final ObjectAnimator transAnimation = ObjectAnimator.ofInt(categorySlide, "scrollX",  294);
+                        transAnimation.setDuration(400);
+                        transAnimation.setInterpolator(new DecelerateInterpolator());
+                        transAnimation.start();
+                    }
                     wearableClicked = false;
                     droneText.setTextColor(Color.parseColor("#8bc53e"));
                     droneBorder.setVisibility(View.VISIBLE);
@@ -426,8 +457,8 @@ public class MainActivity extends AppCompatActivity {
 //            @Override
 //            public boolean onTouch(View view, MotionEvent motionEvent) {
 //                Log.i("Scrolling", categorySlide.getScrollX()+"");
-//                Log.e("pixel",getResources().getDimension(R.dimen.one_dp)+"");
-//                Log.e("pixel",categorySlide.getMaxScrollAmount()+"");
+////                Log.e("pixel",getResources().getDimension(R.dimen.one_dp)+"");
+////                Log.e("pixel",categorySlide.getMaxScrollAmount()+"");
 //                return false;
 //            }
 //        });
@@ -560,41 +591,40 @@ public class MainActivity extends AppCompatActivity {
      */
     public void setCategoryFade() {
         // fade category type
-        final HorizontalScrollView typeSlide = (HorizontalScrollView) findViewById(R.id.typeSlide);
-        final ImageView fadeTypeLeft = (ImageView) findViewById(R.id.fadeTypeLeft);
-        final ImageView fadeTypeRight = (ImageView) findViewById(R.id.fadeTypeRight);
+        fadeTypeLeft = (ImageView) findViewById(R.id.fadeTypeLeft);
+        fadeTypeRight = (ImageView) findViewById(R.id.fadeTypeRight);
 
         final ViewTreeObserver.OnScrollChangedListener onScrollChangedListener = new
                 ViewTreeObserver.OnScrollChangedListener() {
 
                     @Override
                     public void onScrollChanged() {
-                        if (typeSlide.getScrollX() <= 20) {
-                            fadeTypeLeft.setAlpha(typeSlide.getScrollX() / 20f);
+                        if (categorySlide.getScrollX() <= 20) {
+                            fadeTypeLeft.setAlpha(categorySlide.getScrollX() / 20f);
                         } else {
                             fadeTypeLeft.setAlpha(1f);
                         }
-                        if (dimension == 1 && typeSlide.getScrollX() <= 203 * dimension && typeSlide.getScrollX() >= 203 * dimension - 20) {
-                            fadeTypeRight.setAlpha((203 * dimension - typeSlide.getScrollX()) / 20f);
-                        } else if (dimension == 1.5 && typeSlide.getScrollX() <= 294 && typeSlide.getScrollX() >= 294 - 20) {
-                            fadeTypeRight.setAlpha((294 - typeSlide.getScrollX()) / 20f);
+                        if (dimension == 1 && categorySlide.getScrollX() <= 203 && categorySlide.getScrollX() >= 203 - 20) {
+                            fadeTypeRight.setAlpha((203 - categorySlide.getScrollX()) / 20f);
+                        } else if (dimension == 1.5 && categorySlide.getScrollX() <= 294 && categorySlide.getScrollX() >= 294 - 20) {
+                            fadeTypeRight.setAlpha((294 - categorySlide.getScrollX()) / 20f);
                         } else {
                             fadeTypeRight.setAlpha(1f);
                         }
                     }
                 };
 
-        typeSlide.setOnTouchListener(new View.OnTouchListener() {
+        categorySlide.setOnTouchListener(new View.OnTouchListener() {
             private ViewTreeObserver observer;
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (observer == null) {
-                    observer = typeSlide.getViewTreeObserver();
+                    observer = categorySlide.getViewTreeObserver();
                     observer.addOnScrollChangedListener(onScrollChangedListener);
                 } else if (!observer.isAlive()) {
                     observer.removeOnScrollChangedListener(onScrollChangedListener);
-                    observer = typeSlide.getViewTreeObserver();
+                    observer = categorySlide.getViewTreeObserver();
                     observer.addOnScrollChangedListener(onScrollChangedListener);
                 }
 

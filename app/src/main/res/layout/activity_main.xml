@@ -114,6 +114,7 @@
                     android:background="@mipmap/category"
                     android:gravity="center"
                     android:orientation="horizontal"
+                    android:id="@+id/categoryLayout"
                     android:paddingBottom="17dp"
                     android:paddingTop="17dp">
 
