@@ -9,6 +9,7 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -107,29 +109,46 @@ public class MainActivity extends AppCompatActivity {
             final ImageView shadow = (ImageView) newRow.findViewById(R.id.product_shadow);
             final TextView product_content = (TextView) newRow.findViewById(R.id.product_content_text);
             final int tempIndex = i;
-            final boolean isViewVisible = newRow.isShown();
 
             newRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Rect rect = new Rect();
-                    if(newRow.getGlobalVisibleRect(rect)
+                    if (newRow.getGlobalVisibleRect(rect)
                             && newRow.getHeight() == rect.height()
-                            && newRow.getWidth() == rect.width() ) {
+                            && newRow.getWidth() == rect.width()) {
                         Log.e("index", tempIndex + "");
                         if (tempIndex != 0 && tempIndex != product_layout.getChildCount() - 1) {
-                            for (int i = 0; i < product_layout.getChildCount() ; i++) {
+                            for (int i = 0; i < product_layout.getChildCount(); i++) {
                                 if (i != tempIndex) {
                                     product_layout.getChildAt(i).performClick();
                                 }
                             }
-                            Log.e("isClicked", tempProductList.get(tempIndex).isClicked()+"");
+                            Log.e("isClicked", tempProductList.get(tempIndex).isClicked() + "");
                             if (!tempProductList.get(tempIndex).isClicked()) {
                                 imgClicked();
                             } else {
                                 product_layout.getChildAt(tempIndex).performClick();
                             }
                         }
+                    } else {
+                        Log.e("press", product_layout.getChildAt(tempIndex).getLeft() + "");
+                        Log.e("getLeft", productSlide.getScrollX() + "");
+                        if (product_layout.getChildAt(tempIndex).getLeft() > productSlide.getScrollX()) {
+                            productSlide.smoothScrollTo(((int) ((productSlide.getScrollX() / (int) (185 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 185 * dimension) * 1.1)) + (int) (221 * dimension * 0.9), 0);
+                        } else {
+                            productSlide.smoothScrollTo(((int) ((productSlide.getScrollX() / (int) (185 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 185 * dimension) * 1.1)) - (int) (230 * dimension * 0.9), 0);
+                        }
+//                        Log.e("getLeft",newRow.getLeft()+"");
+//                        Log.e("getRight",newRow.getRight()+"");
+//                        Log.e("press",product_layout.getChildAt(tempIndex).getLeft()+"");
+//                        Log.e("formula",(1230*dimension)+(200*dimension*(tempIndex-7))+"");
+//                        if(product_layout.getChildAt(tempIndex).getLeft()*dimension > (1230*dimension)+(200*dimension*(tempIndex-7)) ) {
+//                            productSlide.smoothScrollTo(((int) ((productSlide.getScrollX() / (int) (185 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 185 * dimension) * 1.1))+(int)(221*dimension*0.9), 0);
+//                        } else {
+//                            productSlide.smoothScrollTo(((int) ((productSlide.getScrollX() / (int) (185 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 185 * dimension) * 1.1))-(int)(221*dimension*0.9), 0);
+//                        }
+//                        productSlide.smoothScrollTo(((int) ((productSlide.getScrollX() / (int) (185 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 185 * dimension) * 1.1))+(int)(195*dimension*0.9), 0);
                     }
                 }
 
@@ -261,11 +280,14 @@ public class MainActivity extends AppCompatActivity {
                         product_layout.addView(temp_product_layout.get(i));
                     }
                 } else {
-                    final ObjectAnimator transAnimation = ObjectAnimator.ofInt(categorySlide, "scrollX",  0);
+                    final ObjectAnimator transAnimation = ObjectAnimator.ofInt(categorySlide, "scrollX", 0);
                     transAnimation.setDuration(400);
                     transAnimation.setInterpolator(new DecelerateInterpolator());
                     transAnimation.start();
-//                    ObjectAnimator.ofInt(categorySlide, "scrollX",  0).setDuration(100).start();
+                    ImageView fadeTypeLeft = (ImageView) findViewById(R.id.fadeTypeLeft);
+                    ImageView fadeTypeRight = (ImageView) findViewById(R.id.fadeTypeRight);
+                    fadeTypeRight.setAlpha(1.0f);
+                    fadeTypeLeft.setAlpha(0.0f);
                     wearableClicked = true;
                     setProductFade(fadeProductLeft, fadeProductRight);
                     wearableText.setTextColor(Color.parseColor("#8bc53e"));
@@ -408,16 +430,20 @@ public class MainActivity extends AppCompatActivity {
                     fadeProductRight.setVisibility(View.VISIBLE);
                 } else {
                     if (dimension == 1) {
-                        final ObjectAnimator transAnimation = ObjectAnimator.ofInt(categorySlide, "scrollX",  203);
+                        final ObjectAnimator transAnimation = ObjectAnimator.ofInt(categorySlide, "scrollX", 203);
                         transAnimation.setDuration(400);
                         transAnimation.setInterpolator(new DecelerateInterpolator());
                         transAnimation.start();
                     } else if (dimension == 1.5) {
-                        final ObjectAnimator transAnimation = ObjectAnimator.ofInt(categorySlide, "scrollX",  294);
+                        final ObjectAnimator transAnimation = ObjectAnimator.ofInt(categorySlide, "scrollX", 294);
                         transAnimation.setDuration(400);
                         transAnimation.setInterpolator(new DecelerateInterpolator());
                         transAnimation.start();
                     }
+                    ImageView fadeTypeLeft = (ImageView) findViewById(R.id.fadeTypeLeft);
+                    ImageView fadeTypeRight = (ImageView) findViewById(R.id.fadeTypeRight);
+                    fadeTypeRight.setAlpha(0.0f);
+                    fadeTypeLeft.setAlpha(1.0f);
                     wearableClicked = false;
                     droneText.setTextColor(Color.parseColor("#8bc53e"));
                     droneBorder.setVisibility(View.VISIBLE);
@@ -717,12 +743,14 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("timer :", "null");
                         timer = new Timer();
                         timer.schedule(new TimerTask() {
+
                             @Override
                             public void run() {
                                 if (productSlide.getScrollX() < 138 * dimension) {
                                     productSlide.smoothScrollTo(0, 0);
                                 } else {
-                                    productSlide.smoothScrollTo((int) ((productSlide.getScrollX() / (int) (170 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 170 * dimension) * 1.1), 0);
+                                    productSlide.smoothScrollTo((int) ((productSlide.getScrollX() / (int) (185 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 185 * dimension) * 1.1), 0);
+                                    Log.i("scrollX", (int) ((productSlide.getScrollX() / (int) (170 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 170 * dimension) * 1.1) + "");
                                 }
                             }
                         }, 1000);
