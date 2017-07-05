@@ -81,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
         dimension = getResources().getDimension(R.dimen.one_dp);
         productSlide = (HorizontalScrollView) findViewById(R.id.productSlide);
         categorySlide = (HorizontalScrollView) findViewById(R.id.typeSlide);
-        ImageView fadeTypeLeft = (ImageView) findViewById(R.id.fadeTypeLeft);
-        ImageView fadeTypeRight = (ImageView) findViewById(R.id.fadeTypeRight);
         tempProductList = initProduct();
         product_layout = (ViewGroup) findViewById(R.id.product_layout);
         temp_product_layout = new ArrayList<View>();
@@ -190,9 +188,9 @@ public class MainActivity extends AppCompatActivity {
         final TextView droneText = (TextView) findViewById(R.id.product_type_font_4);
         final ImageView droneType = (ImageView) findViewById(R.id.product_type_4);
         final ImageView droneBorder = (ImageView) findViewById(R.id.product_type_border_4);
-        final TextView cameraText = (TextView) findViewById(R.id.product_type_font_5);
-        final ImageView cameraType = (ImageView) findViewById(R.id.product_type_5);
-        final ImageView cameraBorder = (ImageView) findViewById(R.id.product_type_border_5);
+        final TextView otherText = (TextView) findViewById(R.id.product_type_font_5);
+        final ImageView otherType = (ImageView) findViewById(R.id.product_type_5);
+        final ImageView otherBorder = (ImageView) findViewById(R.id.product_type_border_5);
 
         // set size typeface and action listener of each product type
         wearableText.setTypeface(akrobatBoldExtra);
@@ -247,8 +245,8 @@ public class MainActivity extends AppCompatActivity {
                 speakerBorder.setVisibility(View.INVISIBLE);
                 headsetText.setTextColor(Color.WHITE);
                 headseteBorder.setVisibility(View.INVISIBLE);
-                cameraText.setTextColor(Color.WHITE);
-                cameraBorder.setVisibility(View.INVISIBLE);
+                otherText.setTextColor(Color.WHITE);
+                otherBorder.setVisibility(View.INVISIBLE);
                 droneText.setTextColor(Color.WHITE);
                 droneBorder.setVisibility(View.INVISIBLE);
             }
@@ -296,8 +294,8 @@ public class MainActivity extends AppCompatActivity {
                 wearableBorder.setVisibility(View.INVISIBLE);
                 headsetText.setTextColor(Color.WHITE);
                 headseteBorder.setVisibility(View.INVISIBLE);
-                cameraText.setTextColor(Color.WHITE);
-                cameraBorder.setVisibility(View.INVISIBLE);
+                otherText.setTextColor(Color.WHITE);
+                otherBorder.setVisibility(View.INVISIBLE);
                 droneText.setTextColor(Color.WHITE);
                 droneBorder.setVisibility(View.INVISIBLE);
             }
@@ -344,25 +342,25 @@ public class MainActivity extends AppCompatActivity {
                 speakerBorder.setVisibility(View.INVISIBLE);
                 wearableText.setTextColor(Color.WHITE);
                 wearableBorder.setVisibility(View.INVISIBLE);
-                cameraText.setTextColor(Color.WHITE);
-                cameraBorder.setVisibility(View.INVISIBLE);
+                otherText.setTextColor(Color.WHITE);
+                otherBorder.setVisibility(View.INVISIBLE);
                 droneText.setTextColor(Color.WHITE);
                 droneBorder.setVisibility(View.INVISIBLE);
             }
         });
 
-        cameraText.setTypeface(akrobatBoldExtra);
-        cameraType.setOnClickListener(new View.OnClickListener() {
+        otherText.setTypeface(akrobatBoldExtra);
+        otherType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cameraBorder.getVisibility() == View.VISIBLE) {
+                if (otherBorder.getVisibility() == View.VISIBLE) {
                     if (temp_product_layout.size() < 3) {
                         noneProductText.setVisibility(View.VISIBLE);
                     } else {
                         noneProductText.setVisibility(View.INVISIBLE);
                     }
-                    cameraText.setTextColor(Color.WHITE);
-                    cameraBorder.setVisibility(View.INVISIBLE);
+                    otherText.setTextColor(Color.WHITE);
+                    otherBorder.setVisibility(View.INVISIBLE);
                     product_layout.removeAllViews();
                     for (int i = 0; i < temp_product_layout.size(); i++) {
                         product_layout.addView(temp_product_layout.get(i));
@@ -386,8 +384,8 @@ public class MainActivity extends AppCompatActivity {
                     ImageView fadeTypeRight = (ImageView) findViewById(R.id.fadeTypeRight);
                     fadeTypeRight.setAlpha(0.0f);
                     fadeTypeLeft.setAlpha(1.0f);
-                    cameraText.setTextColor(Color.parseColor("#8bc53e"));
-                    cameraBorder.setVisibility(View.VISIBLE);
+                    otherText.setTextColor(Color.parseColor("#8bc53e"));
+                    otherBorder.setVisibility(View.VISIBLE);
                     product_layout.removeAllViews();
                     for (int i = 0; i < product_layout_other.size(); i++) {
                         product_layout.addView(product_layout_other.get(i));
@@ -451,8 +449,8 @@ public class MainActivity extends AppCompatActivity {
                 speakerBorder.setVisibility(View.INVISIBLE);
                 headsetText.setTextColor(Color.WHITE);
                 headseteBorder.setVisibility(View.INVISIBLE);
-                cameraText.setTextColor(Color.WHITE);
-                cameraBorder.setVisibility(View.INVISIBLE);
+                otherText.setTextColor(Color.WHITE);
+                otherBorder.setVisibility(View.INVISIBLE);
                 wearableText.setTextColor(Color.WHITE);
                 wearableBorder.setVisibility(View.INVISIBLE);
             }
@@ -476,7 +474,6 @@ public class MainActivity extends AppCompatActivity {
 //            @Override
 //            public boolean onTouch(View view, MotionEvent motionEvent) {
 //                Log.i("Scrolling", categorySlide.getScrollX()+"");
-//                Log.i("ScrollingMax", categorySlide.getMaxScrollAmount()+"");
 //                Log.i("ScrollingMax", categorySlide.getWidth()+"");
 //                Log.e("ScrollWidth",Integer.toString(categorySlide.getChildAt(0).getMeasuredWidth()-
 //                        getWindowManager().getDefaultDisplay().getWidth()));
@@ -677,6 +674,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Clear viewing every product.
+     */
     public void clearAllView() {
         for (int i = 0; i < tempProductList.size(); i++) {
             if (tempProductList.get(i).isClicked()) {
