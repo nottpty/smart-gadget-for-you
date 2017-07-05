@@ -85,6 +85,17 @@
                 android:scaleX="-1"
                 app:srcCompat="@mipmap/fade" />
 
+            <TextView
+                android:id="@+id/none_product"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="23dp"
+                android:text="ไม่มี"
+                android:textColor="#adabab"
+                android:textSize="42sp"
+                android:visibility="invisible" />
+
         </FrameLayout>
 
         <ImageView
@@ -123,6 +134,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="-3dp"
                         android:layout_marginRight="-11dp"
+                        android:layout_marginLeft="-5dp"
                         android:layout_marginTop="1dp"
                         android:gravity="center"
                         android:orientation="vertical">
@@ -271,7 +283,7 @@
                                 android:layout_width="305dp"
                                 android:layout_height="145dp"
                                 android:adjustViewBounds="false"
-                                android:src="@mipmap/camera_type" />
+                                android:src="@mipmap/drone_type" />
 
                             <ImageView
                                 android:id="@+id/product_type_border_4"
@@ -289,7 +301,7 @@
                                 android:layout_width="283dp"
                                 android:layout_height="146dp"
                                 android:gravity="bottom|right"
-                                android:text="CAMERA"
+                                android:text="DRONE"
                                 android:textColor="@android:color/white"
                                 android:textSize="42sp" />
 
@@ -315,7 +327,7 @@
                                 android:layout_width="305dp"
                                 android:layout_height="145dp"
                                 android:adjustViewBounds="false"
-                                android:src="@mipmap/drone_type" />
+                                android:src="@mipmap/camera_type" />
 
                             <ImageView
                                 android:id="@+id/product_type_border_5"
@@ -333,7 +345,7 @@
                                 android:layout_width="283dp"
                                 android:layout_height="146dp"
                                 android:gravity="bottom|right"
-                                android:text="DRONE"
+                                android:text="OTHER"
                                 android:textColor="@android:color/white"
                                 android:textSize="42sp" />
 

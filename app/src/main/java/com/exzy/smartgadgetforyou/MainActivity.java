@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -25,6 +26,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,20 +37,20 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity {
     private Typeface akrobatBoldExtra;
     private Typeface heavenMedCond;
-    private boolean wearableClicked;
 
     private ViewGroup product_layout;
     private List<View> temp_product_layout;
     private List<View> product_layout_wearable;
     private List<View> product_layout_speaker;
     private List<View> product_layout_headset;
-    private List<View> product_layout_camera;
     private List<View> product_layout_drone;
+    private List<View> product_layout_other;
     private List<Product> tempProductList;
     private HorizontalScrollView productSlide;
     private HorizontalScrollView categorySlide;
     private ImageView fadeTypeLeft;
     private ImageView fadeTypeRight;
+    private TextView noneProductText;
 
     // identifier of new content image
     private int product_content_new;
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     // dimension of each device
     float dimension;
     // max length of scrolling in productSlide
-    float maxProductScroll;
+//    float maxProductScroll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +89,9 @@ public class MainActivity extends AppCompatActivity {
         product_layout_wearable = new ArrayList<View>();
         product_layout_speaker = new ArrayList<View>();
         product_layout_headset = new ArrayList<View>();
-        product_layout_camera = new ArrayList<View>();
         product_layout_drone = new ArrayList<View>();
+        product_layout_other = new ArrayList<View>();
+        noneProductText = (TextView) findViewById(R.id.none_product);
 
         // initial component of view
         for (int i = 0; i < initProduct().size(); i++) {
@@ -99,93 +103,16 @@ public class MainActivity extends AppCompatActivity {
             lr.setOrientation(LinearLayout.VERTICAL);
             product_layout.addView(lr);
             LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final View newRow = layoutInflater.inflate(R.layout.gadget_recycler_view, null, false);
-            final ImageView product_img = (ImageView) newRow.findViewById(R.id.product_img);
-            final ImageView product_content_img = (ImageView) newRow.findViewById(R.id.product_content_img);
-            final TextView product_price = (TextView) newRow.findViewById(R.id.product_price);
-            final TextView product_name = (TextView) newRow.findViewById(R.id.product_name);
-            final TextView product_viewing = (TextView) newRow.findViewById(R.id.product_viewing);
-            final ImageView bg = (ImageView) newRow.findViewById(R.id.product_bg);
-            final ImageView shadow = (ImageView) newRow.findViewById(R.id.product_shadow);
-            final TextView product_content = (TextView) newRow.findViewById(R.id.product_content_text);
-            final int tempIndex = i;
+            View newRow = layoutInflater.inflate(R.layout.gadget_recycler_view, null, false);
+            ImageView product_img = (ImageView) newRow.findViewById(R.id.product_img);
+            ImageView product_content_img = (ImageView) newRow.findViewById(R.id.product_content_img);
+            TextView product_price = (TextView) newRow.findViewById(R.id.product_price);
+            TextView product_name = (TextView) newRow.findViewById(R.id.product_name);
+            TextView product_viewing = (TextView) newRow.findViewById(R.id.product_viewing);
+            ImageView bg = (ImageView) newRow.findViewById(R.id.product_bg);
+            ImageView shadow = (ImageView) newRow.findViewById(R.id.product_shadow);
+            TextView product_content = (TextView) newRow.findViewById(R.id.product_content_text);
 
-            newRow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Rect rect = new Rect();
-                    if (newRow.getGlobalVisibleRect(rect)
-                            && newRow.getHeight() == rect.height()
-                            && newRow.getWidth() == rect.width()) {
-                        Log.e("index", tempIndex + "");
-                        if (tempIndex != 0 && tempIndex != product_layout.getChildCount() - 1) {
-                            for (int i = 0; i < product_layout.getChildCount(); i++) {
-                                if (i != tempIndex) {
-                                    product_layout.getChildAt(i).performClick();
-                                }
-                            }
-                            Log.e("isClicked", tempProductList.get(tempIndex).isClicked() + "");
-                            if (!tempProductList.get(tempIndex).isClicked()) {
-                                imgClicked();
-                            } else {
-                                product_layout.getChildAt(tempIndex).performClick();
-                            }
-                        }
-                    } else {
-                        Log.e("press", product_layout.getChildAt(tempIndex).getLeft() + "");
-                        Log.e("getLeft", productSlide.getScrollX() + "");
-                        if (product_layout.getChildAt(tempIndex).getLeft() > productSlide.getScrollX()) {
-                            productSlide.smoothScrollTo(((int) ((productSlide.getScrollX() / (int) (185 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 185 * dimension) * 1.1)) + (int) (221 * dimension * 0.9), 0);
-                        } else {
-                            productSlide.smoothScrollTo(((int) ((productSlide.getScrollX() / (int) (185 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 185 * dimension) * 1.1)) - (int) (230 * dimension * 0.9), 0);
-                        }
-//                        Log.e("getLeft",newRow.getLeft()+"");
-//                        Log.e("getRight",newRow.getRight()+"");
-//                        Log.e("press",product_layout.getChildAt(tempIndex).getLeft()+"");
-//                        Log.e("formula",(1230*dimension)+(200*dimension*(tempIndex-7))+"");
-//                        if(product_layout.getChildAt(tempIndex).getLeft()*dimension > (1230*dimension)+(200*dimension*(tempIndex-7)) ) {
-//                            productSlide.smoothScrollTo(((int) ((productSlide.getScrollX() / (int) (185 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 185 * dimension) * 1.1))+(int)(221*dimension*0.9), 0);
-//                        } else {
-//                            productSlide.smoothScrollTo(((int) ((productSlide.getScrollX() / (int) (185 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 185 * dimension) * 1.1))-(int)(221*dimension*0.9), 0);
-//                        }
-//                        productSlide.smoothScrollTo(((int) ((productSlide.getScrollX() / (int) (185 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 185 * dimension) * 1.1))+(int)(195*dimension*0.9), 0);
-                    }
-                }
-
-                // reduce alpha image after click view
-                public void imgClicked() {
-                    product_viewing.setVisibility(View.VISIBLE);
-                    bg.setAlpha((float) 0.5);
-                    product_img.setAlpha((float) 0.3);
-                    product_name.setAlpha((float) 0.3);
-                    product_price.setAlpha((float) 0.3);
-                    product_content_img.setAlpha((float) 0.3);
-                    product_content.setAlpha((float) 0.3);
-                    shadow.setAlpha((float) 0.3);
-                    product_viewing.setAlpha((float) 0.9);
-                    tempProductList.get(tempIndex).setClick(true);
-                }
-            });
-
-            product_layout.getChildAt(i).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    viewingClicked();
-                }
-
-                // increase alpha image after click view
-                public void viewingClicked() {
-                    product_viewing.setVisibility(View.INVISIBLE);
-                    bg.setAlpha((float) 1.0);
-                    product_img.setAlpha((float) 1.0);
-                    product_name.setAlpha((float) 1.0);
-                    product_price.setAlpha((float) 1.0);
-                    product_content_img.setAlpha((float) 1.0);
-                    product_content.setAlpha((float) 1.0);
-                    shadow.setAlpha((float) 1.0);
-                    tempProductList.get(tempIndex).setClick(false);
-                }
-            });
             if (i == 0 || i == initProduct().size() - 1) {
                 product_viewing.setVisibility(View.INVISIBLE);
                 bg.setVisibility(View.INVISIBLE);
@@ -226,6 +153,9 @@ public class MainActivity extends AppCompatActivity {
             lr.addView(newRow);
         }
 
+        // add action in each product
+        addActionInProduct();
+
         // assign value of product in each type to a list
         addProductToEachCategory();
 
@@ -238,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
         TextView myTextViewThai = (TextView) findViewById(R.id.thaiLabel);
         myTextViewThai.setTypeface(heavenMedCond);
         myTextViewThai.setText("กดเลือกแกตเจ็ตที่คุณสนใจได้เลย");
+        noneProductText.setTypeface(heavenMedCond);
 
         // initial fade image product
         final ImageView fadeProductLeft = (ImageView) findViewById(R.id.fadeProductLeft);
@@ -256,30 +187,40 @@ public class MainActivity extends AppCompatActivity {
         final TextView headsetText = (TextView) findViewById(R.id.product_type_font_3);
         final ImageView headsetType = (ImageView) findViewById(R.id.product_type_3);
         final ImageView headseteBorder = (ImageView) findViewById(R.id.product_type_border_3);
-        final TextView cameraText = (TextView) findViewById(R.id.product_type_font_4);
-        final ImageView cameraType = (ImageView) findViewById(R.id.product_type_4);
-        final ImageView cameraBorder = (ImageView) findViewById(R.id.product_type_border_4);
-        final TextView droneText = (TextView) findViewById(R.id.product_type_font_5);
-        final ImageView droneType = (ImageView) findViewById(R.id.product_type_5);
-        final ImageView droneBorder = (ImageView) findViewById(R.id.product_type_border_5);
+        final TextView droneText = (TextView) findViewById(R.id.product_type_font_4);
+        final ImageView droneType = (ImageView) findViewById(R.id.product_type_4);
+        final ImageView droneBorder = (ImageView) findViewById(R.id.product_type_border_4);
+        final TextView cameraText = (TextView) findViewById(R.id.product_type_font_5);
+        final ImageView cameraType = (ImageView) findViewById(R.id.product_type_5);
+        final ImageView cameraBorder = (ImageView) findViewById(R.id.product_type_border_5);
 
         // set size typeface and action listener of each product type
         wearableText.setTypeface(akrobatBoldExtra);
         wearableType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fadeProductRight.setVisibility(View.VISIBLE);
                 if (wearableBorder.getVisibility() == View.VISIBLE) {
-                    wearableClicked = false;
+                    if (temp_product_layout.size() < 3) {
+                        noneProductText.setVisibility(View.VISIBLE);
+                    } else {
+                        noneProductText.setVisibility(View.INVISIBLE);
+                    }
                     setProductFade(fadeProductLeft, fadeProductRight);
                     wearableText.setTextColor(Color.WHITE);
                     wearableBorder.setVisibility(View.INVISIBLE);
                     product_layout.removeAllViews();
                     for (int i = 0; i < temp_product_layout.size(); i++) {
-                        temp_product_layout.get(i).performClick();
                         product_layout.addView(temp_product_layout.get(i));
                     }
+                    clearAllView();
+                    addActionInProduct();
+                    fadeProductRight.setVisibility(View.VISIBLE);
                 } else {
+                    if (product_layout_wearable.size() < 3) {
+                        noneProductText.setVisibility(View.VISIBLE);
+                    } else {
+                        noneProductText.setVisibility(View.INVISIBLE);
+                    }
                     final ObjectAnimator transAnimation = ObjectAnimator.ofInt(categorySlide, "scrollX", 0);
                     transAnimation.setDuration(400);
                     transAnimation.setInterpolator(new DecelerateInterpolator());
@@ -288,14 +229,17 @@ public class MainActivity extends AppCompatActivity {
                     ImageView fadeTypeRight = (ImageView) findViewById(R.id.fadeTypeRight);
                     fadeTypeRight.setAlpha(1.0f);
                     fadeTypeLeft.setAlpha(0.0f);
-                    wearableClicked = true;
                     setProductFade(fadeProductLeft, fadeProductRight);
                     wearableText.setTextColor(Color.parseColor("#8bc53e"));
                     wearableBorder.setVisibility(View.VISIBLE);
                     product_layout.removeAllViews();
                     for (int i = 0; i < product_layout_wearable.size(); i++) {
-                        product_layout_wearable.get(i).performClick();
                         product_layout.addView(product_layout_wearable.get(i));
+                    }
+                    clearAllView();
+                    addActionInProduct();
+                    if(product_layout_wearable.size() < 9) {
+                        fadeProductRight.setVisibility(View.INVISIBLE);
                     }
                 }
 
@@ -314,25 +258,39 @@ public class MainActivity extends AppCompatActivity {
         speakerType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fadeProductRight.setVisibility(View.VISIBLE);
                 if (speakerBorder.getVisibility() == View.VISIBLE) {
+                    if (temp_product_layout.size() < 3) {
+                        noneProductText.setVisibility(View.VISIBLE);
+                    } else {
+                        noneProductText.setVisibility(View.INVISIBLE);
+                    }
                     speakerText.setTextColor(Color.WHITE);
                     speakerBorder.setVisibility(View.INVISIBLE);
                     product_layout.removeAllViews();
                     for (int i = 0; i < temp_product_layout.size(); i++) {
-                        temp_product_layout.get(i).performClick();
                         product_layout.addView(temp_product_layout.get(i));
                     }
+                    clearAllView();
+                    addActionInProduct();
+                    fadeProductRight.setVisibility(View.VISIBLE);
                 } else {
-                    wearableClicked = false;
+                    if (product_layout_speaker.size() < 3) {
+                        noneProductText.setVisibility(View.VISIBLE);
+                    } else {
+                        noneProductText.setVisibility(View.INVISIBLE);
+                    }
                     speakerText.setTextColor(Color.parseColor("#8bc53e"));
                     speakerBorder.setVisibility(View.VISIBLE);
                     product_layout.removeAllViews();
                     for (int i = 0; i < product_layout_speaker.size(); i++) {
-                        product_layout_speaker.get(i).performClick();
                         product_layout.addView(product_layout_speaker.get(i));
+
                     }
-                    fadeProductRight.setVisibility(View.INVISIBLE);
+                    clearAllView();
+                    addActionInProduct();
+                    if(product_layout_speaker.size() < 9) {
+                        fadeProductRight.setVisibility(View.INVISIBLE);
+                    }
                 }
                 wearableText.setTextColor(Color.WHITE);
                 wearableBorder.setVisibility(View.INVISIBLE);
@@ -350,24 +308,37 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (headseteBorder.getVisibility() == View.VISIBLE) {
+                    if (temp_product_layout.size() < 3) {
+                        noneProductText.setVisibility(View.VISIBLE);
+                    } else {
+                        noneProductText.setVisibility(View.INVISIBLE);
+                    }
                     headsetText.setTextColor(Color.WHITE);
                     headseteBorder.setVisibility(View.INVISIBLE);
                     product_layout.removeAllViews();
                     for (int i = 0; i < temp_product_layout.size(); i++) {
-                        temp_product_layout.get(i).performClick();
                         product_layout.addView(temp_product_layout.get(i));
                     }
+                    clearAllView();
+                    addActionInProduct();
                     fadeProductRight.setVisibility(View.VISIBLE);
                 } else {
-                    wearableClicked = false;
+                    if (product_layout_headset.size() < 3) {
+                        noneProductText.setVisibility(View.VISIBLE);
+                    } else {
+                        noneProductText.setVisibility(View.INVISIBLE);
+                    }
                     headsetText.setTextColor(Color.parseColor("#8bc53e"));
                     headseteBorder.setVisibility(View.VISIBLE);
                     product_layout.removeAllViews();
                     for (int i = 0; i < product_layout_headset.size(); i++) {
-                        product_layout_headset.get(i).performClick();
                         product_layout.addView(product_layout_headset.get(i));
                     }
-                    fadeProductRight.setVisibility(View.INVISIBLE);
+                    clearAllView();
+                    addActionInProduct();
+                    if(product_layout_headset.size() < 9) {
+                        fadeProductRight.setVisibility(View.INVISIBLE);
+                    }
                 }
                 speakerText.setTextColor(Color.WHITE);
                 speakerBorder.setVisibility(View.INVISIBLE);
@@ -385,24 +356,47 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (cameraBorder.getVisibility() == View.VISIBLE) {
+                    if (temp_product_layout.size() < 3) {
+                        noneProductText.setVisibility(View.VISIBLE);
+                    } else {
+                        noneProductText.setVisibility(View.INVISIBLE);
+                    }
                     cameraText.setTextColor(Color.WHITE);
                     cameraBorder.setVisibility(View.INVISIBLE);
                     product_layout.removeAllViews();
                     for (int i = 0; i < temp_product_layout.size(); i++) {
-                        temp_product_layout.get(i).performClick();
                         product_layout.addView(temp_product_layout.get(i));
                     }
+                    clearAllView();
+                    addActionInProduct();
                     fadeProductRight.setVisibility(View.VISIBLE);
                 } else {
-                    wearableClicked = false;
+                    if (product_layout_other.size() < 3) {
+                        noneProductText.setVisibility(View.VISIBLE);
+                    } else {
+                        noneProductText.setVisibility(View.INVISIBLE);
+                    }
+                    int maxCategoryScroll = categorySlide.getChildAt(0).getMeasuredWidth() -
+                            getWindowManager().getDefaultDisplay().getWidth();
+                    final ObjectAnimator transAnimation = ObjectAnimator.ofInt(categorySlide, "scrollX", maxCategoryScroll);
+                    transAnimation.setDuration(400);
+                    transAnimation.setInterpolator(new DecelerateInterpolator());
+                    transAnimation.start();
+                    ImageView fadeTypeLeft = (ImageView) findViewById(R.id.fadeTypeLeft);
+                    ImageView fadeTypeRight = (ImageView) findViewById(R.id.fadeTypeRight);
+                    fadeTypeRight.setAlpha(0.0f);
+                    fadeTypeLeft.setAlpha(1.0f);
                     cameraText.setTextColor(Color.parseColor("#8bc53e"));
                     cameraBorder.setVisibility(View.VISIBLE);
                     product_layout.removeAllViews();
-                    for (int i = 0; i < product_layout_camera.size(); i++) {
-                        product_layout_camera.get(i).performClick();
-                        product_layout.addView(product_layout_camera.get(i));
+                    for (int i = 0; i < product_layout_other.size(); i++) {
+                        product_layout.addView(product_layout_other.get(i));
                     }
-                    fadeProductRight.setVisibility(View.INVISIBLE);
+                    clearAllView();
+                    addActionInProduct();
+                    if(product_layout_other.size() < 9) {
+                        fadeProductRight.setVisibility(View.INVISIBLE);
+                    }
                 }
                 speakerText.setTextColor(Color.WHITE);
                 speakerBorder.setVisibility(View.INVISIBLE);
@@ -420,39 +414,38 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (droneBorder.getVisibility() == View.VISIBLE) {
+                    if (temp_product_layout.size() < 3) {
+                        noneProductText.setVisibility(View.VISIBLE);
+                    } else {
+                        noneProductText.setVisibility(View.INVISIBLE);
+                    }
                     droneText.setTextColor(Color.WHITE);
                     droneBorder.setVisibility(View.INVISIBLE);
                     product_layout.removeAllViews();
                     for (int i = 0; i < temp_product_layout.size(); i++) {
-                        temp_product_layout.get(i).performClick();
                         product_layout.addView(temp_product_layout.get(i));
                     }
+                    clearAllView();
+                    addActionInProduct();
+                    addActionInProduct();
                     fadeProductRight.setVisibility(View.VISIBLE);
                 } else {
-                    if (dimension == 1) {
-                        final ObjectAnimator transAnimation = ObjectAnimator.ofInt(categorySlide, "scrollX", 203);
-                        transAnimation.setDuration(400);
-                        transAnimation.setInterpolator(new DecelerateInterpolator());
-                        transAnimation.start();
-                    } else if (dimension == 1.5) {
-                        final ObjectAnimator transAnimation = ObjectAnimator.ofInt(categorySlide, "scrollX", 294);
-                        transAnimation.setDuration(400);
-                        transAnimation.setInterpolator(new DecelerateInterpolator());
-                        transAnimation.start();
+                    if (product_layout_drone.size() < 3) {
+                        noneProductText.setVisibility(View.VISIBLE);
+                    } else {
+                        noneProductText.setVisibility(View.INVISIBLE);
                     }
-                    ImageView fadeTypeLeft = (ImageView) findViewById(R.id.fadeTypeLeft);
-                    ImageView fadeTypeRight = (ImageView) findViewById(R.id.fadeTypeRight);
-                    fadeTypeRight.setAlpha(0.0f);
-                    fadeTypeLeft.setAlpha(1.0f);
-                    wearableClicked = false;
                     droneText.setTextColor(Color.parseColor("#8bc53e"));
                     droneBorder.setVisibility(View.VISIBLE);
                     product_layout.removeAllViews();
                     for (int i = 0; i < product_layout_drone.size(); i++) {
-                        product_layout_drone.get(i).performClick();
                         product_layout.addView(product_layout_drone.get(i));
                     }
-                    fadeProductRight.setVisibility(View.INVISIBLE);
+                    clearAllView();
+                    addActionInProduct();
+                    if(product_layout_drone.size() < 9) {
+                        fadeProductRight.setVisibility(View.INVISIBLE);
+                    }
                 }
                 speakerText.setTextColor(Color.WHITE);
                 speakerBorder.setVisibility(View.INVISIBLE);
@@ -483,8 +476,13 @@ public class MainActivity extends AppCompatActivity {
 //            @Override
 //            public boolean onTouch(View view, MotionEvent motionEvent) {
 //                Log.i("Scrolling", categorySlide.getScrollX()+"");
-////                Log.e("pixel",getResources().getDimension(R.dimen.one_dp)+"");
-////                Log.e("pixel",categorySlide.getMaxScrollAmount()+"");
+//                Log.i("ScrollingMax", categorySlide.getMaxScrollAmount()+"");
+//                Log.i("ScrollingMax", categorySlide.getWidth()+"");
+//                Log.e("ScrollWidth",Integer.toString(categorySlide.getChildAt(0).getMeasuredWidth()-
+//                        getWindowManager().getDefaultDisplay().getWidth()));
+
+//                Log.e("pixel",getResources().getDimension(R.dimen.one_dp)+"");
+//                Log.e("pixel",categorySlide.getMaxScrollAmount()+"");
 //                return false;
 //            }
 //        });
@@ -589,6 +587,123 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * add action in each product
+     */
+    public void addActionInProduct() {
+        for (int i = 0; i < product_layout.getChildCount(); i++) {
+            Log.e("count", product_layout.getChildCount() + "");
+            final int tempIndex = i;
+            final ImageView product_img = (ImageView) product_layout.getChildAt(i).findViewById(R.id.product_img);
+            final ImageView product_content_img = (ImageView) product_layout.getChildAt(i).findViewById(R.id.product_content_img);
+            final TextView product_price = (TextView) product_layout.getChildAt(i).findViewById(R.id.product_price);
+            final TextView product_name = (TextView) product_layout.getChildAt(i).findViewById(R.id.product_name);
+            final TextView product_viewing = (TextView) product_layout.getChildAt(i).findViewById(R.id.product_viewing);
+            final ImageView bg = (ImageView) product_layout.getChildAt(i).findViewById(R.id.product_bg);
+            final ImageView shadow = (ImageView) product_layout.getChildAt(i).findViewById(R.id.product_shadow);
+            final TextView product_content = (TextView) product_layout.getChildAt(i).findViewById(R.id.product_content_text);
+
+            product_layout.getChildAt(i).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e("press index", tempIndex + "");
+                    Rect rect = new Rect();
+                    if (product_layout.getChildAt(tempIndex).getGlobalVisibleRect(rect)
+                            && product_layout.getChildAt(tempIndex).getHeight() == rect.height()
+                            && product_layout.getChildAt(tempIndex).getWidth() == rect.width()) {
+                        if (tempIndex != 0 && tempIndex != product_layout.getChildCount() - 1) {
+                            for (int i = 0; i < product_layout.getChildCount(); i++) {
+                                if (i != tempIndex) {
+                                    ImageView product_img = (ImageView) product_layout.getChildAt(i).findViewById(R.id.product_img);
+                                    ImageView product_content_img = (ImageView) product_layout.getChildAt(i).findViewById(R.id.product_content_img);
+                                    TextView product_price = (TextView) product_layout.getChildAt(i).findViewById(R.id.product_price);
+                                    TextView product_name = (TextView) product_layout.getChildAt(i).findViewById(R.id.product_name);
+                                    TextView product_viewing = (TextView) product_layout.getChildAt(i).findViewById(R.id.product_viewing);
+                                    ImageView bg = (ImageView) product_layout.getChildAt(i).findViewById(R.id.product_bg);
+                                    ImageView shadow = (ImageView) product_layout.getChildAt(i).findViewById(R.id.product_shadow);
+                                    TextView product_content = (TextView) product_layout.getChildAt(i).findViewById(R.id.product_content_text);
+                                    product_viewing.setVisibility(View.INVISIBLE);
+                                    bg.setAlpha((float) 1.0);
+                                    product_img.setAlpha((float) 1.0);
+                                    product_name.setAlpha((float) 1.0);
+                                    product_price.setAlpha((float) 1.0);
+                                    product_content_img.setAlpha((float) 1.0);
+                                    product_content.setAlpha((float) 1.0);
+                                    shadow.setAlpha((float) 1.0);
+                                    tempProductList.get(i).setClick(false);
+                                }
+                            }
+                            if (!tempProductList.get(tempIndex).isClicked()) {
+                                imgClick();
+                            } else {
+                                viewingClick();
+                            }
+                        }
+                    } else {
+                        Log.e("press", product_layout.getChildAt(tempIndex).getLeft() + "");
+//                        Log.e("getLeft", productSlide.getScrollX() + "");
+                        if (product_layout.getChildAt(tempIndex).getLeft() > productSlide.getScrollX()) {
+                            productSlide.smoothScrollTo(((int) ((productSlide.getScrollX() / (int) (185 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 185 * dimension) * 1.1)) + (int) (221 * dimension * 0.9), 0);
+                        } else {
+                            productSlide.smoothScrollTo(((int) ((productSlide.getScrollX() / (int) (185 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 185 * dimension) * 1.1)) - (int) (230 * dimension * 0.9), 0);
+                        }
+                    }
+                }
+
+                public void imgClick() {
+                    product_viewing.setVisibility(View.VISIBLE);
+                    bg.setAlpha((float) 0.5);
+                    product_img.setAlpha((float) 0.3);
+                    product_name.setAlpha((float) 0.3);
+                    product_price.setAlpha((float) 0.3);
+                    product_content_img.setAlpha((float) 0.3);
+                    product_content.setAlpha((float) 0.3);
+                    shadow.setAlpha((float) 0.3);
+                    product_viewing.setAlpha((float) 0.9);
+                    tempProductList.get(tempIndex).setClick(true);
+                }
+
+                public void viewingClick() {
+                    product_viewing.setVisibility(View.INVISIBLE);
+                    bg.setAlpha((float) 1.0);
+                    product_img.setAlpha((float) 1.0);
+                    product_name.setAlpha((float) 1.0);
+                    product_price.setAlpha((float) 1.0);
+                    product_content_img.setAlpha((float) 1.0);
+                    product_content.setAlpha((float) 1.0);
+                    shadow.setAlpha((float) 1.0);
+                    tempProductList.get(tempIndex).setClick(false);
+                }
+            });
+        }
+    }
+
+    public void clearAllView() {
+        for (int i = 0; i < tempProductList.size(); i++) {
+            if (tempProductList.get(i).isClicked()) {
+                tempProductList.get(i).setClick(false);
+            }
+        }
+        for (int i = 0; i < product_layout.getChildCount(); i++) {
+            ImageView product_img = (ImageView) product_layout.getChildAt(i).findViewById(R.id.product_img);
+            ImageView product_content_img = (ImageView) product_layout.getChildAt(i).findViewById(R.id.product_content_img);
+            TextView product_price = (TextView) product_layout.getChildAt(i).findViewById(R.id.product_price);
+            TextView product_name = (TextView) product_layout.getChildAt(i).findViewById(R.id.product_name);
+            TextView product_viewing = (TextView) product_layout.getChildAt(i).findViewById(R.id.product_viewing);
+            ImageView bg = (ImageView) product_layout.getChildAt(i).findViewById(R.id.product_bg);
+            ImageView shadow = (ImageView) product_layout.getChildAt(i).findViewById(R.id.product_shadow);
+            TextView product_content = (TextView) product_layout.getChildAt(i).findViewById(R.id.product_content_text);
+            product_viewing.setVisibility(View.INVISIBLE);
+            bg.setAlpha((float) 1.0);
+            product_img.setAlpha((float) 1.0);
+            product_name.setAlpha((float) 1.0);
+            product_price.setAlpha((float) 1.0);
+            product_content_img.setAlpha((float) 1.0);
+            product_content.setAlpha((float) 1.0);
+            shadow.setAlpha((float) 1.0);
+        }
+    }
+
+    /**
      * Add view from product_layout to list of each category.
      */
     public void addProductToEachCategory() {
@@ -603,8 +718,8 @@ public class MainActivity extends AppCompatActivity {
             if (i == 0 || tempProductList.get(i).getCategory().equalsIgnoreCase("headset") || i == product_layout.getChildCount() - 1) {
                 product_layout_headset.add(product_layout.getChildAt(i));
             }
-            if (i == 0 || tempProductList.get(i).getCategory().equalsIgnoreCase("camera") || i == product_layout.getChildCount() - 1) {
-                product_layout_camera.add(product_layout.getChildAt(i));
+            if (i == 0 || tempProductList.get(i).getCategory().equalsIgnoreCase("other") || i == product_layout.getChildCount() - 1) {
+                product_layout_other.add(product_layout.getChildAt(i));
             }
             if (i == 0 || tempProductList.get(i).getCategory().equalsIgnoreCase("drone") || i == product_layout.getChildCount() - 1) {
                 product_layout_drone.add(product_layout.getChildAt(i));
@@ -625,15 +740,16 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onScrollChanged() {
+                        int maxCategoryScroll = categorySlide.getChildAt(0).getMeasuredWidth() -
+                                getWindowManager().getDefaultDisplay().getWidth();
+
                         if (categorySlide.getScrollX() <= 20) {
                             fadeTypeLeft.setAlpha(categorySlide.getScrollX() / 20f);
                         } else {
                             fadeTypeLeft.setAlpha(1f);
                         }
-                        if (dimension == 1 && categorySlide.getScrollX() <= 203 && categorySlide.getScrollX() >= 203 - 20) {
-                            fadeTypeRight.setAlpha((203 - categorySlide.getScrollX()) / 20f);
-                        } else if (dimension == 1.5 && categorySlide.getScrollX() <= 294 && categorySlide.getScrollX() >= 294 - 20) {
-                            fadeTypeRight.setAlpha((294 - categorySlide.getScrollX()) / 20f);
+                        if (categorySlide.getScrollX() <= maxCategoryScroll && categorySlide.getScrollX() >= maxCategoryScroll - 20) {
+                            fadeTypeRight.setAlpha((maxCategoryScroll - categorySlide.getScrollX()) / 20f);
                         } else {
                             fadeTypeRight.setAlpha(1f);
                         }
@@ -664,17 +780,16 @@ public class MainActivity extends AppCompatActivity {
      * @param fadeProductRight is fade image of right side in HorizontalScrollView
      */
     public void setProductFade(final ImageView fadeProductLeft, final ImageView fadeProductRight) {
-        maxProductScroll = 1810 * dimension;
-        if (dimension == 1.5) {
-            maxProductScroll = 1816 * dimension;
-        }
 
         //fade product type
-        final ViewTreeObserver.OnScrollChangedListener onScrollChangedListenerNotFilter = new
+        final ViewTreeObserver.OnScrollChangedListener onScrollChangedListener = new
                 ViewTreeObserver.OnScrollChangedListener() {
 
                     @Override
                     public void onScrollChanged() {
+                        int maxProductScroll = productSlide.getChildAt(0).getMeasuredWidth() -
+                                getWindowManager().getDefaultDisplay().getWidth();
+
                         if (productSlide.getScrollX() <= 60 * dimension) {
                             fadeProductLeft.setAlpha(productSlide.getScrollX() / 60f * dimension);
                         } else {
@@ -682,25 +797,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                         if (productSlide.getScrollX() <= maxProductScroll && productSlide.getScrollX() >= maxProductScroll - 60 * dimension) {
                             fadeProductRight.setAlpha((maxProductScroll - productSlide.getScrollX()) / 60f * dimension);
-                        } else {
-                            fadeProductRight.setAlpha(1f);
-                        }
-                    }
-                };
-
-        //fade product type (use this listener when clicked wearable category)
-        final ViewTreeObserver.OnScrollChangedListener onScrollChangedListenerWearableFilter = new
-                ViewTreeObserver.OnScrollChangedListener() {
-
-                    @Override
-                    public void onScrollChanged() {
-                        if (productSlide.getScrollX() * dimension <= 50) {
-                            fadeProductLeft.setAlpha(productSlide.getScrollX() * dimension / 50f);
-                        } else {
-                            fadeProductLeft.setAlpha(1f);
-                        }
-                        if (productSlide.getScrollX() <= 610 * dimension && productSlide.getScrollX() * dimension >= (610 * dimension) - 50 * dimension) {
-                            fadeProductRight.setAlpha((610 * dimension - productSlide.getScrollX()) * dimension / 50f * dimension);
                         } else {
                             fadeProductRight.setAlpha(1f);
                         }
@@ -716,31 +812,24 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 if (observer == null) {
                     observer = productSlide.getViewTreeObserver();
-                    if (wearableClicked)
-                        observer.addOnScrollChangedListener(onScrollChangedListenerWearableFilter);
-                    else
-                        observer.addOnScrollChangedListener(onScrollChangedListenerNotFilter);
+                    observer.addOnScrollChangedListener(onScrollChangedListener);
                 } else if (!observer.isAlive()) {
-                    observer.removeOnScrollChangedListener(onScrollChangedListenerWearableFilter);
-                    observer.removeOnScrollChangedListener(onScrollChangedListenerNotFilter);
+                    observer.removeOnScrollChangedListener(onScrollChangedListener);
                     observer = productSlide.getViewTreeObserver();
-                    if (wearableClicked)
-                        observer.addOnScrollChangedListener(onScrollChangedListenerWearableFilter);
-                    else
-                        observer.addOnScrollChangedListener(onScrollChangedListenerNotFilter);
+                    observer.addOnScrollChangedListener(onScrollChangedListener);
                 }
                 if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE) {
-                    Log.e("down :", "yes");
+//                    Log.e("down :", "yes");
                     if (timer != null) {
-                        Log.e("timer :", "!null");
+//                        Log.e("timer :", "!null");
                         timer.cancel();
                         timer.purge();
                         timer = null;
                     }
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    Log.e("up :", "yes");
+//                    Log.e("up :", "yes");
                     if (timer == null) {
-                        Log.e("timer :", "null");
+//                        Log.e("timer :", "null");
                         timer = new Timer();
                         timer.schedule(new TimerTask() {
 
@@ -750,7 +839,7 @@ public class MainActivity extends AppCompatActivity {
                                     productSlide.smoothScrollTo(0, 0);
                                 } else {
                                     productSlide.smoothScrollTo((int) ((productSlide.getScrollX() / (int) (185 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 185 * dimension) * 1.1), 0);
-                                    Log.i("scrollX", (int) ((productSlide.getScrollX() / (int) (170 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 170 * dimension) * 1.1) + "");
+//                                    Log.i("scrollX", (int) ((productSlide.getScrollX() / (int) (170 * dimension)) * 200 * dimension) + (int) ((productSlide.getScrollX() / 170 * dimension) * 1.1) + "");
                                 }
                             }
                         }, 1000);
